@@ -2,6 +2,7 @@ package source
 
 import (
 	"bufio"
+	"jsj/message"
 	"jsj/utils"
 )
 
@@ -10,12 +11,14 @@ type Source struct {
 	line       string
 	lineNum    int
 	currentPos int
+	message.MessageHandler
 }
 
 func SourceConstructor(r bufio.Reader) *Source {
 	return &Source{
-		reader:     r,
-		currentPos: -2,
+		reader:         r,
+		currentPos:     -2,
+		MessageHandler: message.MessageHandlerConstructor(),
 	}
 }
 
@@ -64,6 +67,14 @@ func (sourceInstance *Source) PeekChar() byte {
 	return utils.EOL
 }
 
+func (sourceInstance *Source) GetLineNum() int {
+	return sourceInstance.lineNum
+}
+
+func (sourceInstance *Source) GetPosition() int {
+	return sourceInstance.currentPos
+}
+
 func (sourceInstance *Source) readLine() {
 	l, err := sourceInstance.reader.ReadString('\n')
 	if err != nil {
@@ -76,6 +87,10 @@ func (sourceInstance *Source) readLine() {
 	sourceInstance.currentPos = -1
 
 	if l != "" {
+		sourceInstance.SendMessage(message.MessageConstructor(message.SOURCE_LINE, message.SourceLineEvent{
+			LineNum: sourceInstance.lineNum,
+			Line:    l,
+		}))
 		sourceInstance.lineNum += 1
 	}
 }

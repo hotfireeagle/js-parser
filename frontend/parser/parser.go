@@ -3,15 +3,18 @@ package parser
 import (
 	"jsj/frontend/scanner"
 	"jsj/frontend/token"
+	"jsj/message"
 )
 
 type Parser struct {
 	scanner scanner.Scanner
+	message.MessageHandler
 }
 
 func ParserConstructor(s scanner.Scanner) Parser {
 	return Parser{
-		scanner: s,
+		scanner:        s,
+		MessageHandler: message.MessageHandlerConstructor(),
 	}
 }
 
@@ -24,7 +27,8 @@ func (p *Parser) GetErrorCount() int {
 }
 
 func (p *Parser) CurrentToken() token.Token {
-	return 1
+	// TODO:
+	return token.Token{}
 }
 
 func (p *Parser) NextToken() token.Token {
