@@ -5,8 +5,8 @@ type MessageHandler struct {
 	listeners []MessageListener
 }
 
-func MessageHandlerConstructor() MessageHandler {
-	return MessageHandler{
+func MessageHandlerConstructor() *MessageHandler {
+	return &MessageHandler{
 		listeners: make([]MessageListener, 0),
 	}
 }

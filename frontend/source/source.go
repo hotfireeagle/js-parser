@@ -6,19 +6,19 @@ import (
 	"jsj/utils"
 )
 
+var messageHandler = message.MessageHandlerConstructor()
+
 type Source struct {
 	reader     bufio.Reader
 	line       string
 	lineNum    int
 	currentPos int
-	message.MessageHandler
 }
 
 func SourceConstructor(r bufio.Reader) *Source {
 	return &Source{
-		reader:         r,
-		currentPos:     -2,
-		MessageHandler: message.MessageHandlerConstructor(),
+		reader:     r,
+		currentPos: -2,
 	}
 }
 
@@ -87,7 +87,7 @@ func (sourceInstance *Source) readLine() {
 	sourceInstance.currentPos = -1
 
 	if l != "" {
-		sourceInstance.SendMessage(message.MessageConstructor(message.SOURCE_LINE, message.SourceLineEvent{
+		messageHandler.SendMessage(message.MessageConstructor(message.SOURCE_LINE, message.SourceLineEvent{
 			LineNum: sourceInstance.lineNum,
 			Line:    l,
 		}))

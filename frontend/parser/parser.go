@@ -6,15 +6,15 @@ import (
 	"jsj/message"
 )
 
+var messageHandler = message.MessageHandlerConstructor()
+
 type Parser struct {
 	scanner scanner.Scanner
-	message.MessageHandler
 }
 
 func ParserConstructor(s scanner.Scanner) Parser {
 	return Parser{
-		scanner:        s,
-		MessageHandler: message.MessageHandlerConstructor(),
+		scanner: s,
 	}
 }
 
