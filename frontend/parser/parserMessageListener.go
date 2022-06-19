@@ -15,5 +15,10 @@ func (pml *ParserMessageListener) MessageReceived(messageObj message.Message) {
 			messageBody.(*message.ParserSummaryEvent).Log()
 			break
 		}
+	case message.TOKEN:
+		{
+			messageBody.(*TokenEvent).Log()
+			break
+		}
 	}
 }

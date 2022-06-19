@@ -1,6 +1,8 @@
 package message
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type MessageType int
 

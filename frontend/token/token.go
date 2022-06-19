@@ -14,4 +14,10 @@ type Token interface {
 	GetTokenType() TokenType
 
 	GetLineNumber() int
+
+	GetText() string
+
+	GetValue() TokenValue
+
+	GetPosition() int
 }

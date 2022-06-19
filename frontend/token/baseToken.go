@@ -80,3 +80,7 @@ func (t *BaseToken) GetText() string {
 func (t *BaseToken) GetValue() TokenValue {
 	return t.value
 }
+
+func (t *BaseToken) GetSource() *source.Source {
+	return t.source
+}

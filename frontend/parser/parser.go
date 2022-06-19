@@ -36,6 +36,16 @@ func (p *Parser) Parse() {
 	// 不断调用NextToken()，直到解析到了文件末尾为止
 	tokenInstance = p.NextToken()
 	for tokenInstance.GetTokenType() != token.EOF {
+		// TODO: error token verify
+		tokenLog := &TokenEvent{
+			LineNumber:    tokenInstance.GetLineNumber(),
+			Position:      tokenInstance.GetPosition(),
+			TokenTypeName: tokenInstance.GetTokenType(),
+			Text:          tokenInstance.GetText(),
+			Value:         tokenInstance.GetValue(),
+		}
+		messageObj := message.MessageConstructor(message.TOKEN, tokenLog)
+		messageHandler.SendMessage(messageObj)
 		tokenInstance = p.NextToken()
 	}
 
