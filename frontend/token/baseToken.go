@@ -15,7 +15,7 @@ type BaseToken struct {
 	value TokenValue
 
 	// the token which belong to file
-	source source.Source
+	source *source.Source
 
 	// the token in source file's line number
 	lineNum int
@@ -24,7 +24,7 @@ type BaseToken struct {
 	position int
 }
 
-func BaseTokenConstructor(s source.Source) *BaseToken {
+func BaseTokenConstructor(s *source.Source) *BaseToken {
 	tokenObj := BaseToken{
 		source:   s,
 		lineNum:  s.GetLineNum(),

@@ -13,7 +13,7 @@ type EofToken struct {
 	value TokenValue
 
 	// the token which belong to file
-	source source.Source
+	source *source.Source
 
 	// the token in source file's line number
 	lineNum int
@@ -22,11 +22,12 @@ type EofToken struct {
 	position int
 }
 
-func EofTokenConstructor(s source.Source) *EofToken {
+func EofTokenConstructor(s *source.Source) *EofToken {
 	tokenObj := EofToken{
-		source:   s,
-		lineNum:  s.GetLineNum(),
-		position: s.GetPosition(),
+		source:    s,
+		lineNum:   s.GetLineNum(),
+		position:  s.GetPosition(),
+		tokenType: EOF,
 	}
 
 	tokenObj.Extract()

@@ -11,3 +11,11 @@ func MessageConstructor(t MessageType, b interface{}) Message {
 		messageType: t,
 	}
 }
+
+func (m *Message) GetMessageType() MessageType {
+	return m.messageType
+}
+
+func (m *Message) GetBody() interface{} {
+	return m.body
+}

@@ -8,14 +8,14 @@ import (
 
 type Scanner struct {
 	// source, which is code file
-	source source.Source
+	source *source.Source
 
 	// current token
 	token token.Token
 }
 
 // Scanner Object Constructor
-func ScannerConstructor(s source.Source) *Scanner {
+func ScannerConstructor(s *source.Source) *Scanner {
 	return &Scanner{
 		source: s,
 	}

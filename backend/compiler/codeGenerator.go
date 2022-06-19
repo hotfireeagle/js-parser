@@ -8,19 +8,23 @@ import (
 
 var messageHandler = message.MessageHandlerConstructor()
 
-type Backend struct {
+type Compiler struct {
 	symTab *intermediate.SymTab
 	icode  *intermediate.ICode
 }
 
-func (backendInstance *Backend) Process(icode *intermediate.ICode, symTab *intermediate.SymTab) {
+func CompilerConstructor() *Compiler {
+	return &Compiler{}
+}
+
+func (CompilerInstance *Compiler) Process(icode *intermediate.ICode, symTab *intermediate.SymTab) {
 	startTime := time.Now().UnixMilli()
 
 	endTime := time.Now().UnixMilli()
 
 	var elapsedTime float64 = (float64(endTime) - float64(startTime)) / 1000
 
-	messageLog := message.CompilerSummaryEvent{
+	messageLog := &message.CompilerSummaryEvent{
 		InstructionCount: 0,
 		ElapsedTime:      elapsedTime,
 	}
@@ -28,4 +32,16 @@ func (backendInstance *Backend) Process(icode *intermediate.ICode, symTab *inter
 	messageObj := message.MessageConstructor(message.COMPILER_SUMMARY, messageLog)
 
 	messageHandler.SendMessage(messageObj)
+}
+
+func (compilerInstance *Compiler) GetSymTab() *intermediate.SymTab {
+	return compilerInstance.symTab
+}
+
+func (compilerInstance *Compiler) GetICode() *intermediate.ICode {
+	return compilerInstance.icode
+}
+
+func (compilerInstance *Compiler) AddMessageListener(listener message.MessageListener) {
+	messageHandler.AddListener(listener)
 }

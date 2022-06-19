@@ -5,20 +5,26 @@ package parser
 
 import (
 	"jsj/frontend/scanner"
+	"jsj/frontend/source"
 	"jsj/frontend/token"
+	"jsj/intermediate"
 	"jsj/message"
 	"time"
 )
 
 var messageHandler = message.MessageHandlerConstructor()
 
+var sysTab *intermediate.SymTab
+
 type Parser struct {
-	scanner scanner.Scanner
+	icode   *intermediate.ICode
+	scanner *scanner.Scanner
 }
 
-func ParserConstructor(s scanner.Scanner) Parser {
+func ParserConstructor(s *source.Source) Parser {
+	scannerInstance := scanner.ScannerConstructor(s)
 	return Parser{
-		scanner: s,
+		scanner: scannerInstance,
 	}
 }
 
@@ -28,15 +34,16 @@ func (p *Parser) Parse() {
 	startTime := time.Now().UnixMilli()
 
 	// 不断调用NextToken()，直到解析到了文件末尾为止
-	for tokenInstance = p.NextToken(); tokenInstance.GetTokenType() != token.EOF; {
-
+	tokenInstance = p.NextToken()
+	for tokenInstance.GetTokenType() != token.EOF {
+		tokenInstance = p.NextToken()
 	}
 
 	endTime := time.Now().UnixMilli()
 
 	var elapsedTime float64 = (float64(endTime) - float64(startTime)) / 1000
 
-	eventlog := message.ParserSummaryEvent{
+	eventlog := &message.ParserSummaryEvent{
 		LineNum:     tokenInstance.GetLineNumber(),
 		ErrorCount:  p.GetErrorCount(),
 		ElapsedTime: elapsedTime,
@@ -54,9 +61,21 @@ func (p *Parser) GetErrorCount() int {
 
 func (p *Parser) CurrentToken() token.Token {
 	// TODO:
-	return token.Token{}
+	return nil
 }
 
 func (p *Parser) NextToken() token.Token {
 	return p.scanner.NextToken()
+}
+
+func (p *Parser) AddMessageListener(listener message.MessageListener) {
+	messageHandler.AddListener(listener)
+}
+
+func (p *Parser) GetICode() *intermediate.ICode {
+	return p.icode
+}
+
+func (p *Parser) GetSymTab() *intermediate.SymTab {
+	return sysTab
 }

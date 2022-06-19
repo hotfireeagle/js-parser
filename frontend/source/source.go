@@ -2,6 +2,8 @@ package source
 
 import (
 	"bufio"
+	"errors"
+	"io"
 	"jsj/message"
 	"jsj/utils"
 )
@@ -26,17 +28,22 @@ func SourceConstructor(r bufio.Reader) *Source {
 func (sourceInstance *Source) CurrentChar() byte {
 	if sourceInstance.currentPos == -2 {
 		// first time
-		sourceInstance.readLine()
+		isEof := sourceInstance.readLine()
+
+		if isEof {
+			return utils.EOF
+		}
+
 		return sourceInstance.NextChar()
-	} else if sourceInstance.line == "" {
-		// at end of file
-		return utils.EOF
 	} else if (sourceInstance.currentPos == -1) || sourceInstance.currentPos == len(sourceInstance.line) {
 		// at end of line
 		return utils.EOL
 	} else if sourceInstance.currentPos > len(sourceInstance.line) {
 		// need read the next line
-		sourceInstance.readLine()
+		isEof := sourceInstance.readLine()
+		if isEof {
+			return utils.EOF
+		}
 		return sourceInstance.NextChar()
 	} else {
 		return sourceInstance.line[sourceInstance.currentPos]
@@ -75,10 +82,12 @@ func (sourceInstance *Source) GetPosition() int {
 	return sourceInstance.currentPos
 }
 
-func (sourceInstance *Source) readLine() {
+func (sourceInstance *Source) readLine() bool {
 	l, err := sourceInstance.reader.ReadString('\n')
 	if err != nil {
-		// TODO:
+		if errors.Is(err, io.EOF) {
+			return true
+		}
 		panic(err)
 	}
 
@@ -87,14 +96,16 @@ func (sourceInstance *Source) readLine() {
 	sourceInstance.currentPos = -1
 
 	if l != "" {
-		messageHandler.SendMessage(message.MessageConstructor(message.SOURCE_LINE, message.SourceLineEvent{
+		messageHandler.SendMessage(message.MessageConstructor(message.SOURCE_LINE, &message.SourceLineEvent{
 			LineNum: sourceInstance.lineNum,
 			Line:    l,
 		}))
 		sourceInstance.lineNum += 1
 	}
+
+	return false
 }
 
-func (sourceInstance *Source) Close() {
-
+func (sourceInstance *Source) AddMessageListener(listener message.MessageListener) {
+	messageHandler.AddListener(listener)
 }

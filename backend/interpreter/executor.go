@@ -8,12 +8,16 @@ import (
 
 var messageHandler = message.MessageHandlerConstructor()
 
-type Backend struct {
+type Interpreter struct {
 	symTab *intermediate.SymTab
 	icode  *intermediate.ICode
 }
 
-func (backendInstance *Backend) Process(icode *intermediate.ICode, symTab *intermediate.SymTab) {
+func InterpreterConstructor() *Interpreter {
+	return &Interpreter{}
+}
+
+func (InterpreterInstance *Interpreter) Process(icode *intermediate.ICode, symTab *intermediate.SymTab) {
 	startTime := time.Now().UnixMilli()
 
 	endTime := time.Now().UnixMilli()
@@ -29,4 +33,16 @@ func (backendInstance *Backend) Process(icode *intermediate.ICode, symTab *inter
 	messageObj := message.MessageConstructor(message.INTERPRETER_SUMMARY, messageLog)
 
 	messageHandler.SendMessage(messageObj)
+}
+
+func (interpreterInstance *Interpreter) GetSymTab() *intermediate.SymTab {
+	return interpreterInstance.symTab
+}
+
+func (interpreterInstance *Interpreter) GetICode() *intermediate.ICode {
+	return interpreterInstance.icode
+}
+
+func (interpreterInstance *Interpreter) AddMessageListener(listener message.MessageListener) {
+	messageHandler.AddListener(listener)
 }
