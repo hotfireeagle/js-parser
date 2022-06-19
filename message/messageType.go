@@ -7,6 +7,12 @@ type SourceLineEvent struct {
 	Line    string
 }
 
+type ParserSummaryEvent struct {
+	LineNum     int
+	ErrorCount  int
+	ElapsedTime float64
+}
+
 const (
 	SOURCE_LINE MessageType = iota
 	SYNTAX_ERROR

@@ -62,3 +62,11 @@ func (t *Token) NextChar() byte {
 func (t *Token) PeekChar() byte {
 	return t.source.PeekChar()
 }
+
+func (t *Token) GetTokenType() TokenType {
+	return t.tokenType
+}
+
+func (t *Token) GetLineNumber() int {
+	return t.lineNum
+}
