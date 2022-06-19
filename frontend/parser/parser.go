@@ -45,7 +45,7 @@ func (p *Parser) Parse() {
 			Value:         tokenInstance.GetValue(),
 		}
 		messageObj := message.MessageConstructor(message.TOKEN, tokenLog)
-		messageHandler.SendMessage(messageObj)
+		p.ParserSendMessage(messageObj)
 		tokenInstance = p.NextToken()
 	}
 
@@ -61,7 +61,7 @@ func (p *Parser) Parse() {
 
 	message := message.MessageConstructor(message.PARSER_SUMMARY, eventlog)
 
-	messageHandler.SendMessage(message)
+	p.ParserSendMessage(message)
 }
 
 // return the number of syntax errors found by the parser
@@ -80,6 +80,10 @@ func (p *Parser) NextToken() token.Token {
 
 func (p *Parser) AddMessageListener(listener message.MessageListener) {
 	messageHandler.AddListener(listener)
+}
+
+func (p *Parser) ParserSendMessage(messageObj message.Message) {
+	messageHandler.SendMessage(messageObj)
 }
 
 func (p *Parser) GetICode() *intermediate.ICode {

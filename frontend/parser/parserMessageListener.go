@@ -20,5 +20,10 @@ func (pml *ParserMessageListener) MessageReceived(messageObj message.Message) {
 			messageBody.(*TokenEvent).Log()
 			break
 		}
+	case message.SYNTAX_ERROR:
+		{
+			messageBody.(*SyntaxErrorEvent).Log()
+			break
+		}
 	}
 }

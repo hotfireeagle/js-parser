@@ -33,3 +33,19 @@ func (te *TokenEvent) Log() {
 		fmt.Printf(format2, tokenValue)
 	}
 }
+
+type SyntaxErrorEvent struct {
+	// 错误出现的行号
+	LineNumber int
+	// 错误列号
+	Position int
+	// 错误token
+	Text string
+	// 错误描述
+	ErrorMessage string
+}
+
+func (se *SyntaxErrorEvent) Log() {
+	format := "第%d行第%d列出现错误, 错误字符为: %s\n, 错误描述为: %s\n"
+	fmt.Printf(format, se.LineNumber, se.Position, se.Text, se.ErrorMessage)
+}
