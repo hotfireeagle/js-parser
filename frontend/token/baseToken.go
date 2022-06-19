@@ -4,9 +4,7 @@ import (
 	"jsj/frontend/source"
 )
 
-type TokenValue interface{}
-
-type Token struct {
+type BaseToken struct {
 	// javascript token type
 	tokenType TokenType
 
@@ -26,8 +24,8 @@ type Token struct {
 	position int
 }
 
-func TokenConstructor(s source.Source) Token {
-	tokenObj := Token{
+func BaseTokenConstructor(s source.Source) *BaseToken {
+	tokenObj := BaseToken{
 		source:   s,
 		lineNum:  s.GetLineNum(),
 		position: s.GetPosition(),
@@ -35,13 +33,13 @@ func TokenConstructor(s source.Source) Token {
 
 	tokenObj.Extract()
 
-	return tokenObj
+	return &tokenObj
 }
 
 // extract : 提取
 // 默认的提取方法，只适用于从source文件中提取出一个character的token
 // 不同的token可覆盖该实现方法
-func (t *Token) Extract() {
+func (t *BaseToken) Extract() {
 	t.text = string(t.CurrentChar())
 	t.value = nil
 	t.NextChar() // sideEffect: consume current character
@@ -49,24 +47,36 @@ func (t *Token) Extract() {
 
 // return the current character from the source
 // call the source's CurrentChar() method
-func (t *Token) CurrentChar() byte {
+func (t *BaseToken) CurrentChar() byte {
 	return t.source.CurrentChar()
 }
 
 // return the next character from the source
-func (t *Token) NextChar() byte {
+func (t *BaseToken) NextChar() byte {
 	return t.source.NextChar()
 }
 
 // return the source character *following* the current character without consuming the current character
-func (t *Token) PeekChar() byte {
+func (t *BaseToken) PeekChar() byte {
 	return t.source.PeekChar()
 }
 
-func (t *Token) GetTokenType() TokenType {
+func (t *BaseToken) GetTokenType() TokenType {
 	return t.tokenType
 }
 
-func (t *Token) GetLineNumber() int {
+func (t *BaseToken) GetLineNumber() int {
 	return t.lineNum
+}
+
+func (t *BaseToken) GetPosition() int {
+	return t.position
+}
+
+func (t *BaseToken) GetText() string {
+	return t.text
+}
+
+func (t *BaseToken) GetValue() TokenValue {
+	return t.value
 }

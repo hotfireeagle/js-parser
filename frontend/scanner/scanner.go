@@ -3,6 +3,7 @@ package scanner
 import (
 	"jsj/frontend/source"
 	"jsj/frontend/token"
+	"jsj/utils"
 )
 
 type Scanner struct {
@@ -34,7 +35,18 @@ func (scannerInstance *Scanner) NextToken() token.Token {
 // extract : 提取
 // do the actual work of extracting token and return the next token from the source
 func (scannerInstance *Scanner) extractToken() token.Token {
-	return 1
+	var tokenInstance token.Token
+
+	// the current character determines what type of token to construct
+	currentChar := scannerInstance.CurrentChar()
+
+	if currentChar == utils.EOF {
+		tokenInstance = token.EofTokenConstructor(scannerInstance.source)
+	} else { // TODO:
+		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
+	}
+
+	return tokenInstance
 }
 
 // return the current character from the source
