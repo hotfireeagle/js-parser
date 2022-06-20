@@ -12,6 +12,7 @@ type TokenType int
 const (
 	ILLEGAL TokenType = iota
 	EOF
+	ERROR
 	COMMENT
 	KEYWORD
 

@@ -15,11 +15,17 @@ type ParserErrorHandler struct {
 	errorCount int
 }
 
+func ParserErrorHandlerConstructor() *ParserErrorHandler {
+	return &ParserErrorHandler{
+		errorCount: 0,
+	}
+}
+
 // 发布词法错误事件
 func (peh *ParserErrorHandler) Flag(
 	tokenObj token.Token,
 	errorCode SyntaxErrorCode,
-	parserIns Parser,
+	parserIns *Parser,
 ) {
 	syntaxErrorEvent := SyntaxErrorEvent{
 		LineNumber:   tokenObj.GetLineNumber(),
@@ -37,7 +43,7 @@ func (peh *ParserErrorHandler) Flag(
 }
 
 // 中止解析过程
-func (peh *ParserErrorHandler) AbortTranslation(errorCode *SyntaxErrorCode, parserIns Parser) {
+func (peh *ParserErrorHandler) AbortTranslation(errorCode *SyntaxErrorCode, parserIns *Parser) {
 	syntaxErrorEvent := SyntaxErrorEvent{
 		LineNumber:   0,
 		Position:     0,

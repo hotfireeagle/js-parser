@@ -13,6 +13,7 @@ import (
 )
 
 var messageHandler = message.MessageHandlerConstructor()
+var errHandler = ParserErrorHandlerConstructor()
 
 var sysTab *intermediate.SymTab
 
@@ -36,17 +37,20 @@ func (p *Parser) Parse() {
 	// 不断调用NextToken()，直到解析到了文件末尾为止
 	tokenInstance = p.NextToken()
 	for tokenInstance.GetTokenType() != token.EOF {
-		// TODO: error token verify
-		tokenLog := &TokenEvent{
-			LineNumber:    tokenInstance.GetLineNumber(),
-			Position:      tokenInstance.GetPosition(),
-			TokenTypeName: tokenInstance.GetTokenType(),
-			Text:          tokenInstance.GetText(),
-			Value:         tokenInstance.GetValue(),
+		if tokenInstance.GetTokenType() == token.ERROR {
+			errHandler.Flag(tokenInstance, tokenInstance.GetValue().(SyntaxErrorCode), p)
+		} else {
+			tokenLog := &TokenEvent{
+				LineNumber:    tokenInstance.GetLineNumber(),
+				Position:      tokenInstance.GetPosition(),
+				TokenTypeName: tokenInstance.GetTokenType(),
+				Text:          tokenInstance.GetText(),
+				Value:         tokenInstance.GetValue(),
+			}
+			messageObj := message.MessageConstructor(message.TOKEN, tokenLog)
+			p.ParserSendMessage(messageObj)
+			tokenInstance = p.NextToken()
 		}
-		messageObj := message.MessageConstructor(message.TOKEN, tokenLog)
-		p.ParserSendMessage(messageObj)
-		tokenInstance = p.NextToken()
 	}
 
 	endTime := time.Now().UnixMilli()
