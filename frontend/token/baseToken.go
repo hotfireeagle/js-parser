@@ -4,6 +4,8 @@ import (
 	"jsj/frontend/source"
 )
 
+// TODO: del
+
 type BaseToken struct {
 	// javascript token type
 	tokenType TokenType

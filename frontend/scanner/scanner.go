@@ -35,6 +35,8 @@ func (scannerInstance *Scanner) NextToken() token.Token {
 // extract : 提取
 // do the actual work of extracting token and return the next token from the source
 func (scannerInstance *Scanner) extractToken() token.Token {
+	scannerInstance.skipWhiteSpace()
+
 	var tokenInstance token.Token
 
 	// the current character determines what type of token to construct
@@ -42,9 +44,19 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 
 	if currentChar == utils.EOF {
 		tokenInstance = token.EofTokenConstructor(scannerInstance.source)
-	} else { // TODO:
+	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
+
+	// TODO:
+	// else if unicode.IsLetter(rune(currentChar)) {
+
+	// } else if unicode.IsDigit(rune(currentChar)) {
+
+	// } else if currentChar == '\'' {
+
+	// } else if currentChar == '"' {
+	// }
 
 	return tokenInstance
 }
@@ -57,4 +69,13 @@ func (scannerInstance *Scanner) CurrentChar() byte {
 // return the next character from the source
 func (scannerInstance *Scanner) NextChar() byte {
 	return scannerInstance.source.NextChar()
+}
+
+// 跳过whitespace, 并且把它们给consume掉
+func (si *Scanner) skipWhiteSpace() {
+	currentCharacter := si.CurrentChar()
+
+	for currentCharacter == 32 {
+		currentCharacter = si.NextChar()
+	}
 }
