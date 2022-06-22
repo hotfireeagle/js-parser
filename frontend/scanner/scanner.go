@@ -47,6 +47,8 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 		tokenInstance = token.EofTokenConstructor(scannerInstance.source)
 	} else if utils.CheckIsJSWordPrefix(currentChar) {
 		tokenInstance = token.WordTokenConstructor(scannerInstance.source)
+	} else if currentChar == '"' {
+		tokenInstance = token.DoubleQuoteTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
@@ -56,7 +58,6 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 
 	// } else if currentChar == '\'' {
 
-	// } else if currentChar == '"' {
 	// }
 
 	return tokenInstance
