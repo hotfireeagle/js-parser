@@ -10,8 +10,10 @@ type TokenEvent struct {
 	LineNumber int
 	// beginning source position
 	Position int
+	// token type name
+	TokenTypeName string
 	// token type
-	TokenTypeName token.TokenType
+	TokenType token.TokenType
 	// token text
 	Text string
 	// token value
@@ -19,7 +21,6 @@ type TokenEvent struct {
 }
 
 func (te *TokenEvent) Log() {
-	// TODO: token type print
 	format1 := ">>> %s line=%03d, pos=%2d, text=\"%s\"\n"
 	fmt.Printf(format1, te.TokenTypeName, te.LineNumber, te.Position, te.Text)
 
@@ -27,7 +28,7 @@ func (te *TokenEvent) Log() {
 
 	if te.Value != nil {
 		tokenValue := te.Value
-		if te.TokenTypeName == token.STRING {
+		if te.TokenType == token.STRING {
 			tokenValue = "\"" + te.Value.(string) + "\"\n"
 		}
 		fmt.Printf(format2, tokenValue)

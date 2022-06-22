@@ -36,6 +36,7 @@ func (scannerInstance *Scanner) NextToken() token.Token {
 // do the actual work of extracting token and return the next token from the source
 func (scannerInstance *Scanner) extractToken() token.Token {
 	scannerInstance.skipWhiteSpace()
+	scannerInstance.skipComment()
 
 	var tokenInstance token.Token
 
@@ -44,14 +45,14 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 
 	if currentChar == utils.EOF {
 		tokenInstance = token.EofTokenConstructor(scannerInstance.source)
+	} else if utils.CheckIsJSWordPrefix(currentChar) {
+		tokenInstance = token.WordTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
 
 	// TODO:
-	// else if unicode.IsLetter(rune(currentChar)) {
-
-	// } else if unicode.IsDigit(rune(currentChar)) {
+	// else if unicode.IsDigit(rune(currentChar)) {
 
 	// } else if currentChar == '\'' {
 
@@ -78,4 +79,9 @@ func (si *Scanner) skipWhiteSpace() {
 	for currentCharacter == 32 {
 		currentCharacter = si.NextChar()
 	}
+}
+
+// TODO: 跳过注释
+func (si *Scanner) skipComment() {
+
 }

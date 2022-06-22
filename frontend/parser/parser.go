@@ -43,7 +43,8 @@ func (p *Parser) Parse() {
 			tokenLog := &TokenEvent{
 				LineNumber:    tokenInstance.GetLineNumber(),
 				Position:      tokenInstance.GetPosition(),
-				TokenTypeName: tokenInstance.GetTokenType(),
+				TokenTypeName: token.GetTokenTypeName(tokenInstance.GetTokenType()),
+				TokenType:     tokenInstance.GetTokenType(),
 				Text:          tokenInstance.GetText(),
 				Value:         tokenInstance.GetValue(),
 			}
