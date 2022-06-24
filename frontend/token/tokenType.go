@@ -129,6 +129,21 @@ const (
 	lastKeyword // nolint: deadcode TODO: del
 )
 
+// 单字符的token
+var SingleToken = map[byte]TokenType{
+	'~': BITWISE_NOT,
+	'(': LEFT_PARENTHESIS,
+	'[': LEFT_BRACKET,
+	'{': LEFT_BRACE,
+	',': COMMA,
+	')': RIGHT_PARENTHESIS,
+	']': RIGHT_BRACKET,
+	'}': RIGHT_BRACE,
+	';': SEMICOLON,
+	':': COLON,
+	'?': QUESTION_MARK,
+}
+
 // ECMAScript规范的保留关键字
 var KeyWordMap map[string]TokenType = map[string]TokenType{
 	"if":         IF,

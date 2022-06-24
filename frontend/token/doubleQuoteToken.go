@@ -43,6 +43,8 @@ func (dqt *DoubleQuoteToken) Extract() {
 	currentChar := dqt.NextChar()
 	var textBuilder strings.Builder
 
+	// TODO: 字符串可换行，兼容该场景
+	// TODO: 考虑""未正确闭合的错误场景
 	for currentChar != '"' {
 		textBuilder.WriteByte(currentChar)
 		currentChar = dqt.NextChar()
@@ -53,6 +55,7 @@ func (dqt *DoubleQuoteToken) Extract() {
 
 	dqt.tokenType = STRING
 	dqt.text = textBuilder.String()
+	dqt.value = dqt.text
 }
 
 // return the current character from the source
