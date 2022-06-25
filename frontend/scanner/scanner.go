@@ -49,6 +49,8 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 		tokenInstance = token.WordTokenConstructor(scannerInstance.source)
 	} else if currentChar == '"' {
 		tokenInstance = token.DoubleQuoteTokenConstructor(scannerInstance.source)
+	} else if token.CheckIsSingleCharacterToken(currentChar) {
+		tokenInstance = token.SingleCharacterTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
