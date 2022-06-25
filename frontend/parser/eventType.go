@@ -21,18 +21,18 @@ type TokenEvent struct {
 }
 
 func (te *TokenEvent) Log() {
-	format1 := ">>> %s line=%03d, pos=%2d, text=\"%s\"\n"
+	format1 := ">>> (%15s) line=%03d, pos=%2d, text=\"%s\"\n"
 	fmt.Printf(format1, te.TokenTypeName, te.LineNumber, te.Position, te.Text)
 
-	format2 := ">>>       value=%s"
+	// format2 := ">>>       value=%s"
 
-	if te.Value != nil {
-		tokenValue := te.Value
-		if te.TokenType == token.STRING {
-			tokenValue = "\"" + te.Value.(string) + "\"\n"
-		}
-		fmt.Printf(format2, tokenValue)
-	}
+	// if te.Value != nil {
+	// 	tokenValue := te.Value
+	// 	if te.TokenType == token.STRING {
+	// 		tokenValue = "\"" + te.Value.(string) + "\"\n"
+	// 	}
+	// 	fmt.Printf(format2, tokenValue)
+	// }
 }
 
 type SyntaxErrorEvent struct {

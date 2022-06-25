@@ -52,8 +52,10 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 	} else if token.CheckIsSingleCharacterToken(currentChar) {
 		tokenInstance = token.SingleCharacterTokenConstructor(scannerInstance.source)
 	} else if currentChar == '+' {
+		// TODO: 判断数字
 		tokenInstance = token.DeterminedPlusTokenConstructor(scannerInstance.source)
 	} else if currentChar == '-' {
+		// TODO: 判断数字
 		tokenInstance = token.DeterminedMinusTokenConstructor(scannerInstance.source)
 	} else if currentChar == '*' {
 		tokenInstance = token.DeterminedMultiplyTokenConstructor(scannerInstance.source)
@@ -80,6 +82,8 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 	} else if currentChar == '=' {
 		// 提取=, ==, ===
 		tokenInstance = token.DeterminedEqualTokenConstructor(scannerInstance.source)
+	} else if token.CheckIsNumberBeginCharacter(currentChar) {
+		tokenInstance = token.NumberTokenConstructor(scannerInstance.source, true)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
