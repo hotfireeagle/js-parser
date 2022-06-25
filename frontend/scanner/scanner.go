@@ -71,6 +71,9 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 	} else if currentChar == '^' {
 		// 提取 ^, ^=
 		tokenInstance = token.DeterminedExclusiveOrTokenConstructor(scannerInstance.source)
+	} else if currentChar == '<' {
+		// 提取<, <<, <<=,
+		tokenInstance = token.DeterminedLessTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
