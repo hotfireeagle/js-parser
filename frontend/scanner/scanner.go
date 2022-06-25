@@ -62,6 +62,9 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 		tokenInstance = token.DeterminedSlashTokenConstructor(scannerInstance.source)
 	} else if currentChar == '%' {
 		tokenInstance = token.DeterminedRemainderTokenConstructor(scannerInstance.source)
+	} else if currentChar == '&' {
+		// 提取 &, &^, &=, &^=, &&
+		tokenInstance = token.DeterminedAndTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
