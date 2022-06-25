@@ -53,6 +53,8 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 		tokenInstance = token.SingleCharacterTokenConstructor(scannerInstance.source)
 	} else if currentChar == '+' {
 		tokenInstance = token.DeterminedPlusTokenConstructor(scannerInstance.source)
+	} else if currentChar == '-' {
+		tokenInstance = token.DeterminedMinusTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
