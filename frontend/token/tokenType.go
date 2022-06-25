@@ -142,6 +142,7 @@ var SingleToken = map[byte]TokenType{
 	';': SEMICOLON,
 	':': COLON,
 	'?': QUESTION_MARK,
+	'=': EQUAL,
 }
 
 // ECMAScript规范的保留关键字

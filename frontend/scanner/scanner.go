@@ -55,6 +55,11 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 		tokenInstance = token.DeterminedPlusTokenConstructor(scannerInstance.source)
 	} else if currentChar == '-' {
 		tokenInstance = token.DeterminedMinusTokenConstructor(scannerInstance.source)
+	} else if currentChar == '*' {
+		tokenInstance = token.DeterminedMultiplyTokenConstructor(scannerInstance.source)
+	} else if currentChar == '/' {
+		// 在这个分支即提取出了/, /=, 也提取了行注释
+		tokenInstance = token.DeterminedSlashTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
