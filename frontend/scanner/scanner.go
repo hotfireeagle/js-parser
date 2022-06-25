@@ -51,6 +51,8 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 		tokenInstance = token.DoubleQuoteTokenConstructor(scannerInstance.source)
 	} else if token.CheckIsSingleCharacterToken(currentChar) {
 		tokenInstance = token.SingleCharacterTokenConstructor(scannerInstance.source)
+	} else if currentChar == '+' {
+		tokenInstance = token.DeterminedPlusTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
