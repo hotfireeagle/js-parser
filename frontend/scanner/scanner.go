@@ -52,11 +52,19 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 	} else if token.CheckIsSingleCharacterToken(currentChar) {
 		tokenInstance = token.SingleCharacterTokenConstructor(scannerInstance.source)
 	} else if currentChar == '+' {
-		// TODO: 判断数字
-		tokenInstance = token.DeterminedPlusTokenConstructor(scannerInstance.source)
+		if token.CheckIsNumberBeginCharacter(scannerInstance.PeekChar()) {
+			scannerInstance.NextChar()
+			tokenInstance = token.NumberTokenConstructor(scannerInstance.source, true)
+		} else {
+			tokenInstance = token.DeterminedPlusTokenConstructor(scannerInstance.source)
+		}
 	} else if currentChar == '-' {
-		// TODO: 判断数字
-		tokenInstance = token.DeterminedMinusTokenConstructor(scannerInstance.source)
+		if token.CheckIsNumberBeginCharacter(scannerInstance.PeekChar()) {
+			scannerInstance.NextChar()
+			tokenInstance = token.NumberTokenConstructor(scannerInstance.source, false)
+		} else {
+			tokenInstance = token.DeterminedMinusTokenConstructor(scannerInstance.source)
+		}
 	} else if currentChar == '*' {
 		tokenInstance = token.DeterminedMultiplyTokenConstructor(scannerInstance.source)
 	} else if currentChar == '/' {
@@ -106,6 +114,10 @@ func (scannerInstance *Scanner) CurrentChar() byte {
 // return the next character from the source
 func (scannerInstance *Scanner) NextChar() byte {
 	return scannerInstance.source.NextChar()
+}
+
+func (scannerInstance *Scanner) PeekChar() byte {
+	return scannerInstance.source.PeekChar()
 }
 
 // 跳过whitespace, 并且把它们给consume掉
