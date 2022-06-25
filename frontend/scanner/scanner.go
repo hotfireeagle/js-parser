@@ -77,6 +77,9 @@ func (scannerInstance *Scanner) extractToken() token.Token {
 	} else if currentChar == '>' {
 		// 提取>, >>, >>>, >>=, >>>=, >=
 		tokenInstance = token.DeterminedGreaterTokenConstructor(scannerInstance.source)
+	} else if currentChar == '=' {
+		// 提取=, ==, ===
+		tokenInstance = token.DeterminedEqualTokenConstructor(scannerInstance.source)
 	} else {
 		tokenInstance = token.BaseTokenConstructor(scannerInstance.source)
 	}
