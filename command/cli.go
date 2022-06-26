@@ -8,6 +8,7 @@ import (
 	"jsj/backend/interpreter"
 	"jsj/frontend/parser"
 	"jsj/frontend/source"
+	"jsj/intermediate"
 	"os"
 )
 
@@ -44,6 +45,11 @@ func BeginWork() {
 
 	icode := parserInstance.GetICode()
 	symTab := parserInstance.GetSymTab()
+
+	symTabStack := parserInstance.GetSymTabStack()
+
+	cr := intermediate.CrossReferencerConstructor()
+	cr.Print(symTabStack)
 
 	backendInstance.Process(icode, symTab)
 }

@@ -108,3 +108,7 @@ func (p *Parser) GetICode() *intermediate.ICode {
 func (p *Parser) GetSymTab() *intermediate.SymTab {
 	return sysTab
 }
+
+func (p *Parser) GetSymTabStack() *intermediate.SymTabStack {
+	return symTabStack
+}
