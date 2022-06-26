@@ -36,6 +36,7 @@ func (scannerInstance *Scanner) NextToken() token.Token {
 // do the actual work of extracting token and return the next token from the source
 func (scannerInstance *Scanner) extractToken() token.Token {
 	scannerInstance.skipWhiteSpace()
+	scannerInstance.skipEol()
 	scannerInstance.skipComment()
 
 	var tokenInstance token.Token
@@ -126,6 +127,15 @@ func (si *Scanner) skipWhiteSpace() {
 
 	for currentCharacter == 32 {
 		currentCharacter = si.NextChar()
+	}
+}
+
+// skip end of line
+func (si *Scanner) skipEol() {
+	currentChar := si.CurrentChar()
+
+	for currentChar == utils.EOL {
+		currentChar = si.NextChar()
 	}
 }
 
