@@ -19,7 +19,7 @@ func (st *SymTab) GetNestingLevel() int {
 }
 
 func (st *SymTab) Enter(name string) *SymTabEntry {
-	entry := SymTabEntryConstructor()
+	entry := SymTabEntryConstructor(name, st)
 	st.entrys[name] = entry
 	return entry
 }
