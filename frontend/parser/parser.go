@@ -40,6 +40,15 @@ func (p *Parser) Parse() {
 	for tokenInstance.GetTokenType() != token.EOF {
 		if tokenInstance.GetTokenType() == token.ERROR {
 			errHandler.Flag(tokenInstance, tokenInstance.GetValue().(SyntaxErrorCode), p)
+		} else if tokenInstance.GetTokenType() == token.IDENTIFIER {
+			// 对于javascript来说，关键字是大小写敏感的，所以不做小写的处理
+			identifierName := tokenInstance.GetText()
+			entry := symTabStack.LookUp(identifierName)
+			if entry == nil {
+				entry = symTabStack.EnterLocal(identifierName)
+			}
+			entry.AppendLineNumber(tokenInstance.GetLineNumber())
+			tokenInstance = p.NextToken()
 		} else {
 			tokenLog := &TokenEvent{
 				LineNumber:    tokenInstance.GetLineNumber(),
