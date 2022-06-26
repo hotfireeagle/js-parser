@@ -16,6 +16,7 @@ var messageHandler = message.MessageHandlerConstructor()
 var errHandler = ParserErrorHandlerConstructor()
 
 var sysTab *intermediate.SymTab
+var symTabStack = intermediate.SymTabStackConstructor()
 
 type Parser struct {
 	icode   *intermediate.ICode
