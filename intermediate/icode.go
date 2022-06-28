@@ -1,15 +1,18 @@
 package intermediate
 
-type ICode struct{}
+type ICode struct {
+	root *ICodeNode
+}
 
 func IcodeConstructor() *ICode {
 	return &ICode{}
 }
 
 func (ic *ICode) SetRoot(node *ICodeNode) *ICodeNode {
-	return nil
+	ic.root = node
+	return ic.root
 }
 
 func (ic *ICode) GetRoot() *ICodeNode {
-	return nil
+	return ic.root
 }

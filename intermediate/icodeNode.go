@@ -1,39 +1,62 @@
 package intermediate
 
 type ICodeNode struct {
+	nodeType   ICodeNodeType
+	parent     *ICodeNode
+	children   []*ICodeNode
+	attributes map[ICodeKey]interface{}
 }
 
-func ICodeNodeConstructor() *ICodeNode {
-	return &ICodeNode{}
+func ICodeNodeConstructor(t ICodeNodeType) *ICodeNode {
+	return &ICodeNode{
+		nodeType:   t,
+		parent:     nil,
+		children:   make([]*ICodeNode, 0),
+		attributes: make(map[ICodeKey]interface{}),
+	}
 }
 
 func (icn *ICodeNode) GetType() ICodeNodeType {
-	return 0
+	return icn.nodeType
 }
 
 // 返回当前节点的父节点
 func (icn *ICodeNode) GetParent() *ICodeNode {
-	return nil
+	return icn.parent
 }
 
-// 新增子节点
+// 给icn node添加子节点
 func (icn *ICodeNode) AddChild(node *ICodeNode) *ICodeNode {
-	return nil
+	if node != nil {
+		icn.children = append(icn.children, node)
+		node.parent = icn
+	}
+	return node
 }
 
 // 获取子节点列表
 func (icn *ICodeNode) GetChildren() []*ICodeNode {
-	return nil
+	return icn.children
 }
 
 func (icn *ICodeNode) SetAttribute(k ICodeKey, v interface{}) {
-
+	icn.attributes[k] = v
 }
 
 func (icn *ICodeNode) GetAttribute(k ICodeKey) interface{} {
-	return nil
+	return icn.attributes[k]
 }
 
 func (icn *ICodeNode) Copy() *ICodeNode {
-	return nil
+	copyIns := ICodeNodeConstructor(icn.nodeType)
+
+	for k, v := range icn.attributes {
+		copyIns.SetAttribute(k, v)
+	}
+
+	return copyIns
+}
+
+func (icn *ICodeNode) ToString() string {
+	return icn.nodeType.ToString()
 }
