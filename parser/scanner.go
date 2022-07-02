@@ -33,7 +33,7 @@ type Scanner struct {
 	// 当前读取行的列索引
 	lineColumn int
 
-	// 是否已经读取到文件末尾
+	// 当前是否已经读取到了文件最后一行
 	hasEOF bool
 }
 
@@ -77,6 +77,9 @@ func (fr *Scanner) readline() {
 func (fr *Scanner) CurrentChar() (byte, error) {
 	if fr.lineColumn >= fr.lineLength {
 		// 表示当前行已经读取完毕
+		if fr.hasEOF {
+			return 0, utils.ErrEof
+		}
 		return 0, utils.ErrEol
 	} else {
 		return fr.lineRaw[fr.lineColumn], nil
@@ -342,11 +345,11 @@ func (s *Scanner) scanStringLiteral() *Token {
 }
 
 func (s *Scanner) Lex() *Token {
-	if s.hasEOF {
+	cp, err := s.CurrentChar()
+
+	if errors.Is(err, utils.ErrEof) {
 		return TokenConstructor(EOF, "", s.lineNumber, s.lineColumn)
 	}
-
-	cp, err := s.CurrentChar()
 
 	if err != nil {
 		panic(err)

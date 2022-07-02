@@ -1,18 +1,17 @@
 package main
 
 import (
-	"fmt"
+	"jsj/out"
 	"jsj/parser"
 )
 
 func main() {
-	scaner := parser.ScannerConstructor("/Users/smallhai/Desktop/test.js")
+	scanner := parser.ScannerConstructor("/Users/smallhai/Desktop/test.js")
+	defer scanner.CloseFile()
 
-	tokenizer := parser.TokenizerConstructor(scaner)
+	tokenizer := parser.TokenizerConstructor(scanner)
 
 	tokens := tokenizer.Tokenize()
 
-	for _, token := range tokens {
-		fmt.Println(token.TokenTypeToString(), token.GetValue())
-	}
+	out.SaveJsonTokens(tokens)
 }
