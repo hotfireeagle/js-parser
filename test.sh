@@ -1,0 +1,2 @@
+cd ./parser
+go test
