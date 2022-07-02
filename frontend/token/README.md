@@ -1,3 +1,0 @@
-# token
-
-定义了ECMAScript5标准下的javascript的lexical tokens
