@@ -4,7 +4,7 @@ type ICodeNode struct {
 	nodeType   ICodeNodeType
 	parent     *ICodeNode
 	children   []*ICodeNode
-	attributes map[ICodeKey]interface{}
+	attributes map[ICodeKey]interface{} // TODO: no interface{}
 }
 
 func ICodeNodeConstructor(t ICodeNodeType) *ICodeNode {
@@ -59,4 +59,8 @@ func (icn *ICodeNode) Copy() *ICodeNode {
 
 func (icn *ICodeNode) ToString() string {
 	return icn.nodeType.ToString()
+}
+
+func (icn *ICodeNode) GetAttributes() map[ICodeKey]interface{} {
+	return icn.attributes
 }
