@@ -76,7 +76,7 @@ func (fr *FileReader) readline() {
 func (fr *FileReader) CurrentChar() (byte, error) {
 	if fr.lineColumn >= fr.lineLength {
 		// 表示当前行已经读取完毕
-		return 0, utils.EOL_ERR
+		return 0, utils.ErrEol
 	} else {
 		return fr.lineRaw[fr.lineColumn], nil
 	}
@@ -90,7 +90,7 @@ func (fr *FileReader) NextChar() (byte, error) {
 		// 那么读取下一行
 		if fr.hasEOF {
 			// 表示文件已经读取完毕，没有读取下一行的机会了
-			return 0, utils.EOF_ERR
+			return 0, utils.ErrEof
 		} else {
 			// 读取下一行
 			fr.readline()
