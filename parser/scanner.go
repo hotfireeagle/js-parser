@@ -11,6 +11,7 @@ import (
 
 // TODO: 支持中文
 // TODO: 支持二进制、八进制、十六进制
+// TODO: 支持一些基础的语法检查
 
 type Scanner struct {
 	// 文件读取器
@@ -70,6 +71,7 @@ func (fr *Scanner) readline() {
 
 	fr.lineRaw = lineContent
 	fr.lineLength = len(fr.lineRaw)
+	fr.lineNumber += 1
 	fr.lineColumn = 0
 }
 
@@ -319,6 +321,11 @@ func (s *Scanner) scanNumericLiteral() *Token {
 				break
 			}
 		}
+	}
+
+	if utils.IsIdentifierBegin(ch) {
+		syntaxErr := SyntaxErrorConstructor(s, UnexpectedTokenIllegal)
+		syntaxErr.Fatal()
 	}
 
 	return TokenConstructor(NumericLiteral, num.String(), s.lineNumber, s.lineColumn-len(num.String()))
