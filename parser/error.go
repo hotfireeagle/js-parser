@@ -9,10 +9,12 @@ type SyntaxErrType int
 
 const (
 	UnexpectedTokenIllegal SyntaxErrType = iota
+	UnexpectedEOF
 )
 
 var errCn = map[SyntaxErrType]string{
 	UnexpectedTokenIllegal: "Unexpected token ILLEGAL",
+	UnexpectedEOF:          "Unexpected end of file",
 }
 
 type SyntaxError struct {

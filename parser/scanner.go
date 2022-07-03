@@ -38,6 +38,9 @@ type Scanner struct {
 
 	// 当前是否已经读取到了文件最后一行
 	hasEOF bool
+
+	// 是否命中需要进行多行注释检查的校验
+	hitByMultiLineComment bool
 }
 
 func ScannerConstructor(fp string) *Scanner {
@@ -354,6 +357,11 @@ func (s *Scanner) Lex() *Token {
 	cp, err := s.CurrentChar()
 
 	if errors.Is(err, utils.ErrEof) {
+		if s.hitByMultiLineComment {
+			// 文件结尾了，多行注释还没有正确闭合的话，那么报错
+			syntaxErr := SyntaxErrorConstructor(s, UnexpectedEOF)
+			syntaxErr.Fatal()
+		}
 		return TokenConstructor(EOF, "", s.lineNumber, s.lineColumn)
 	}
 
@@ -369,6 +377,32 @@ func (s *Scanner) Lex() *Token {
 	if cp == utils.SPACE {
 		s.NextChar()
 		return s.Lex()
+	}
+
+	// 提取多行注释的结尾标志，遇不到的话，那么把他当成注释进行考虑
+	if s.hitByMultiLineComment {
+		return s.skipMultiLineCommentWhenHitAlready()
+	}
+
+	// 跳过单行注释的处理
+	if cp == '/' {
+		nextCp, err2 := s.Peek(1)
+		if !errors.Is(err2, utils.ErrEol) && nextCp == '/' {
+			// 单行注释的开始标志
+			// 直接开始读取下一行
+			s.readline()
+			return s.Lex()
+		}
+	}
+
+	// 多行注释开始标志的判断
+	if cp == '/' {
+		nextCp, perr2 := s.Peek(1)
+		if !errors.Is(perr2, utils.ErrEol) && nextCp == '*' {
+			// 设置当前已经进入多行注释校验，期望见到多行注释的结尾标志
+			s.setHitByMultiLineComment()
+			return s.Lex()
+		}
 	}
 
 	if utils.IsIdentifierBegin(cp) {
@@ -439,18 +473,33 @@ func (s *Scanner) setLineRaw(str string) {
 	s.lineLength = len(str)
 	s.lineNumber += 1
 	s.lineColumn = 0
-
-	s.skipSingleLineComment()
 }
 
-// 跳过单行注释
-func (s *Scanner) skipSingleLineComment() {
-	if len(s.lineRaw) >= 2 {
-		if s.lineRaw[0] == '/' && s.lineRaw[1] == '/' {
-			// 表示当前行是单行注释，那么跳过它，直接读取下一行
-			s.readline()
+func (s *Scanner) skipMultiLineCommentWhenHitAlready() *Token {
+	cr, _ := s.CurrentChar()
+
+	if cr == '*' {
+		nxc, perr := s.Peek(1)
+		if !errors.Is(perr, utils.ErrEol) && nxc == '/' {
+			// 多行注释的结束标志
+			s.hitByMultiLineComment = false
+			s.NextChar()
+			s.NextChar()
+			return s.Lex()
+		} else {
+			s.NextChar()
+			return s.Lex()
 		}
+	} else {
+		s.NextChar()
+		return s.Lex()
 	}
+}
+
+func (s *Scanner) setHitByMultiLineComment() {
+	s.hitByMultiLineComment = true
+	s.NextChar() // consume /
+	s.NextChar() // consume *
 }
 
 func (fr *Scanner) GetFilePath() string {
