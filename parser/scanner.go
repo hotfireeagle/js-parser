@@ -360,6 +360,7 @@ func (s *Scanner) scanStringLiteral() *Token {
 	return TokenConstructor(StringLiteral, result.String(), s.lineNumber, s.lineColumn-len(result.String()))
 }
 
+// TODO: 提取匹配模式
 func (s *Scanner) scanRegExp(steps int) *Token {
 	var regexpStr strings.Builder
 
@@ -428,9 +429,11 @@ func (s *Scanner) Lex() *Token {
 		}
 	}
 
-	// TODO: 不一定对
+	// 在前面已经过滤掉了注释
+	// 所以这里的/要么是正则表达式，要么是操作符
+	// 如果是操作符的话，那么前面不可能是空token、等号token、圆括号token，中括号token
 	if cp == '/' {
-		if prevExtractToken == nil || (prevExtractToken.GetTokenType() == NumericLiteral || prevExtractToken.GetTokenType() == Identifier) {
+		if prevExtractToken == nil || (prevExtractToken.GetValue() == "=" || prevExtractToken.GetValue() == "(" || prevExtractToken.GetValue() == "[") {
 			// 判断是不是正则表达式
 			for i := s.lineColumn + 1; i < s.lineLength; i++ {
 				ccp := s.lineRaw[i]
