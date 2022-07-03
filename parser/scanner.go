@@ -12,6 +12,8 @@ import (
 // TODO: 支持中文
 // TODO: 支持二进制、八进制、十六进制
 // TODO: 支持一些基础的语法检查
+// TODO: 支持单引号字符串
+// TODO: 支持template
 
 type Scanner struct {
 	// 文件读取器
@@ -57,22 +59,19 @@ func ScannerConstructor(fp string) *Scanner {
 }
 
 // 对文件进行按行读取
-func (fr *Scanner) readline() {
-	lineContent, readErr := fr.reader.ReadString('\n')
+func (s *Scanner) readline() {
+	lineContent, readErr := s.reader.ReadString('\n')
 
 	if readErr != nil {
 		if errors.Is(readErr, io.EOF) {
-			fr.hasEOF = true
+			s.hasEOF = true
 		} else {
-			fr.CloseFile()
+			s.CloseFile()
 			panic(readErr)
 		}
 	}
 
-	fr.lineRaw = lineContent
-	fr.lineLength = len(fr.lineRaw)
-	fr.lineNumber += 1
-	fr.lineColumn = 0
+	s.setLineRaw(lineContent)
 }
 
 // 当前行读取的字符，不会对它进行消费，只是简单获取
@@ -428,6 +427,29 @@ func (s *Scanner) isKeyword(id string) bool {
 		return (id == "instanceof")
 	default:
 		return false
+	}
+}
+
+// 携带副作用去更新行内容
+// 副作用1: 更新行号
+// 副作用2: 更新列号
+// 副作用3: 如果是单行注释的话，那么跳过
+func (s *Scanner) setLineRaw(str string) {
+	s.lineRaw = str
+	s.lineLength = len(str)
+	s.lineNumber += 1
+	s.lineColumn = 0
+
+	s.skipSingleLineComment()
+}
+
+// 跳过单行注释
+func (s *Scanner) skipSingleLineComment() {
+	if len(s.lineRaw) >= 2 {
+		if s.lineRaw[0] == '/' && s.lineRaw[1] == '/' {
+			// 表示当前行是单行注释，那么跳过它，直接读取下一行
+			s.readline()
+		}
 	}
 }
 
