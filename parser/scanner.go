@@ -293,6 +293,7 @@ func (s *Scanner) scanPunctuator() *Token {
 }
 
 // 提取出十进制数字
+// TODO: 支持二进制、八进制、16进制
 func (s *Scanner) scanNumericLiteral() *Token {
 	ch, err := s.CurrentChar()
 
@@ -336,7 +337,7 @@ func (s *Scanner) scanNumericLiteral() *Token {
 func (s *Scanner) scanStringLiteral() *Token {
 	ch, err := s.NextChar()
 
-	if err == utils.ErrEof {
+	if errors.Is(err, utils.ErrEof) {
 		panic(err)
 	}
 
@@ -345,9 +346,14 @@ func (s *Scanner) scanStringLiteral() *Token {
 	for ch != '"' {
 		result.WriteByte(ch)
 		ch, err = s.NextChar()
-		if err == utils.ErrEof {
+		if errors.Is(err, utils.ErrEof) {
+			// TODO:
 			panic("Unexpected EOF")
 		}
+	}
+
+	if ch == '"' {
+		s.NextChar() //  consume the end "
 	}
 
 	return TokenConstructor(StringLiteral, result.String(), s.lineNumber, s.lineColumn-len(result.String()))
@@ -427,6 +433,14 @@ func (s *Scanner) Lex() *Token {
 		}
 		return s.scanPunctuator()
 	}
+
+	// 16进制的处理
+	// if cp == '0' {
+	// 	ncp, ncperr := s.Peek(1)
+	// 	if !errors.Is(ncperr, utils.ErrEol) && (ncp == 'x' || ncp == 'X') {
+
+	// 	}
+	// }
 
 	if utils.IsDecimalDigit(cp) {
 		return s.scanNumericLiteral()

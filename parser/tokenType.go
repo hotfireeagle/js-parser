@@ -87,3 +87,7 @@ func (t *Token) GetValue() string {
 func (t *Token) TokenTypeToString() string {
 	return TokenName[t.tokenType]
 }
+
+func (t *Token) GetLineNumber() int {
+	return t.lineNumber
+}
