@@ -20,6 +20,7 @@ func (t *Tokenizer) Tokenize() []*Token {
 
 	for {
 		token := t.GetNextToken()
+		prevExtractToken = token
 		if token == nil || token.GetTokenType() == EOF {
 			break
 		}

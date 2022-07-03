@@ -14,6 +14,7 @@ import (
 // TODO: 支持一些基础的语法检查
 // TODO: 支持单引号字符串
 // TODO: 支持template
+// TODO: 支持正则表达式
 
 type Scanner struct {
 	// 文件读取器
@@ -215,7 +216,7 @@ func (s *Scanner) scanPunctuator() *Token {
 		}
 		break
 	case ")":
-	case "":
+	case ";":
 	case ",":
 	case "[":
 	case "]":
@@ -359,6 +360,22 @@ func (s *Scanner) scanStringLiteral() *Token {
 	return TokenConstructor(StringLiteral, result.String(), s.lineNumber, s.lineColumn-len(result.String()))
 }
 
+func (s *Scanner) scanRegExp(steps int) *Token {
+	var regexpStr strings.Builder
+
+	c, _ := s.CurrentChar()
+	regexpStr.WriteByte(c)
+
+	for j := 0; j < steps; j++ {
+		c, _ = s.NextChar()
+		regexpStr.WriteByte(c)
+	}
+
+	s.NextChar()
+
+	return TokenConstructor(RegularExpression, regexpStr.String(), s.lineNumber, s.lineColumn-len(regexpStr.String()))
+}
+
 func (s *Scanner) Lex() *Token {
 	cp, err := s.CurrentChar()
 
@@ -408,6 +425,20 @@ func (s *Scanner) Lex() *Token {
 			// 设置当前已经进入多行注释校验，期望见到多行注释的结尾标志
 			s.setHitByMultiLineComment()
 			return s.Lex()
+		}
+	}
+
+	// TODO: 不一定对
+	if cp == '/' {
+		if prevExtractToken == nil || (prevExtractToken.GetTokenType() == NumericLiteral || prevExtractToken.GetTokenType() == Identifier) {
+			// 判断是不是正则表达式
+			for i := s.lineColumn + 1; i < s.lineLength; i++ {
+				ccp := s.lineRaw[i]
+				if ccp == '/' {
+					// 是正则表达式
+					return s.scanRegExp(i - s.lineColumn)
+				}
+			}
 		}
 	}
 

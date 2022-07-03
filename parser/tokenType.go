@@ -28,7 +28,6 @@ const (
 	StringLiteral
 
 	// 正则表达式
-	// TODO:
 	RegularExpression
 
 	// 模板字符串
