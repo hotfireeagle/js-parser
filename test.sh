@@ -1,2 +1,0 @@
-cd ./parser
-go test
