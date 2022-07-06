@@ -47,6 +47,15 @@ var TokenName = map[TokenType]string{
 	Template:          "Template",
 }
 
+// 为了正则表达式token而准备
+type IToken interface {
+	GetTokenType() TokenType
+	GetValue() string
+	GetLineNumber() int
+	GetLineColumn() int
+	TokenTypeToString() string
+}
+
 type Token struct {
 	// token类型
 	tokenType TokenType
@@ -89,4 +98,8 @@ func (t *Token) TokenTypeToString() string {
 
 func (t *Token) GetLineNumber() int {
 	return t.lineNumber
+}
+
+func (t *Token) GetLineColumn() int {
+	return t.lineColumn
 }
